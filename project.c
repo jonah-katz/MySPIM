@@ -3,6 +3,7 @@
 
 /* ALU */
 /* 10 Points */
+/*  written by Jonah Katz   */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
 
@@ -40,20 +41,35 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
             *ALUresult = ~A;
             break;
     }
-    
+
     if(*ALUresult == 0 ){
         *Zero = 1;
     } else {
         *Zero = 0;
     }
-    
+
 }
 
 /* instruction fetch */
 /* 10 Points */
+/*  written by Zach Chenet  */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
+    //  check for word alignment is a multiple of 4
+    if(PC % 4 == 0){
 
+        //  use correct part of PC
+        unsigned MemoryLocation = PC >> 2;
+
+        //  set insruction to the disired instruction
+        *instruction = mem[MemoryLocation];
+        return 0;
+    }
+    //  if no word alignment
+    else{
+
+        return 1;
+    }
 }
 
 
