@@ -243,9 +243,17 @@ void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigne
 
 /* Sign Extend */
 /* 10 Points */
+/*  written by Jonah Katz   */
 void sign_extend(unsigned offset,unsigned *extended_value)
 {
-
+    unsigned signBit = offset >> 15; /* the sign but is the left most bit of the 16 bit string */
+    if(signBit == 1) {
+        /* negative, expand to 32 bits */
+        *extended_value = offset | 0xFFFF0000; /* left half are all 1's
+    } else {
+        /* not negative, just keep at 16 bits */
+        *extended_value = offset & 0x0000ffff;
+    }
 }
 
 /* ALU operations */
