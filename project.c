@@ -5,8 +5,8 @@
 /* 10 Points */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
-
-    switch ((int)ALUControl) {
+ 
+    switch ((int)ALUControl) { //Cast char to int for switch statement
         case 000:
             *ALUresult = A + B;
             break;
@@ -14,14 +14,14 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
             *ALUresult = A - B;
             break;
         case 010:
-            if((signed)A < (signed)B) {
+            if((signed)A < (signed)B) { //if we're doing a comparison, must be signed. aka int
                 *ALUresult = 1;
             } else {
                 *ALUresult = 0;
             }
             break;
         case 011:
-            if((signed)A < (signed)B) {
+            if(A < B) {
                 *ALUresult = 1;
             } else {
                 *ALUresult = 0;
