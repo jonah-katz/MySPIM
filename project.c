@@ -6,7 +6,7 @@
 /*  written by Jonah Katz   */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
- 
+
     switch ((int)ALUControl) { //Cast char to int for switch statement
         case 000:
             *ALUresult = A + B;
@@ -78,21 +78,21 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 /*  written by Jonah Katz   */
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
 {
-    
+
     /* partition offsets to get desired instruction part */
     unsigned rPart	= 0x1f;
 	unsigned operationsPart		= 0x0000003f;
     unsigned offsetPart	= 0x0000ffff;
 	unsigned jsecPart	= 0x03ffffff;
-    
+
     *op = (instruction >> 26 ) & operationsPart; // op = instruction[31 - 26]
     *r1 = (instruction >> 21) & rPart; // r1 = instruction[25 - 21]
     *r2 = (instruction >> 16) & rPart; // r2 = instruction[20 - 16]
     *r3= (instruction >> 11) & rPart; // r3 = instruction[15 - 11]
     *funct = instruction & operationsPart; //funct = instruction[5-0]
     *offset = instruction & offsetPart; //offset = instruction [15-0]
-    *jsec = instruction & jsecPart;//jsex = instruction [25-0]
-    
+    *jsec = instruction & jsecPart;//jsec = instruction [25-0]
+
 }
 
 
