@@ -6,6 +6,47 @@
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
 
+    switch ((int)ALUControl) {
+        case 000:
+            *ALUresult = A + B;
+            break;
+        case 001:
+            *ALUresult = A - B;
+            break;
+        case 010:
+            if((signed)A < (signed)B) {
+                *ALUresult = 1;
+            } else {
+                *ALUresult = 0;
+            }
+            break;
+        case 011:
+            if((signed)A < (signed)B) {
+                *ALUresult = 1;
+            } else {
+                *ALUresult = 0;
+            }
+            break;
+        case 100:
+            *ALUresult = A&&B;
+            break;
+        case 101:
+            *ALUresult = A||B;
+            break;
+        case 110:
+            B<<16;
+            break;
+        case 111:
+            *ALUresult = !A;
+            break;
+    }
+    
+    if(*ALUresult == 0 ){
+        *Zero = 1;
+    } else {
+        *Zero = 0;
+    }
+    
 }
 
 /* instruction fetch */
