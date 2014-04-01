@@ -102,6 +102,131 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
 int instruction_decode(unsigned op,struct_controls *controls)
 {
 
+    //  operation to see how Op Codes decodes
+    switch(op){
+
+        //  r-type opCode
+        case 00000:
+                    control->RegDst = 1;
+                    control->Jump = 0;
+                    control->Branch = 0;
+                    control->MemRead = 0;
+                    control->MemtoReg = 0;
+                    control->ALUOp = 7;
+                    control->MemWrite = 0;
+                    control->AluSrc = 0;
+                    control->RegWrite = 1;
+                break;
+
+        //  add imidiate
+        case 001000:
+                    control->RegDst = 0;
+                    control->Jump = 0;
+                    control->Branch = 0;
+                    control->MemRead = 0;
+                    control->MemtoReg = 0;
+                    control->ALUOp = 0;
+                    control->MemWrite = 0;
+                    control->AluSrc = 1;
+                    control->RegWrite = 1;
+                break;
+
+        //  load unsigned immidiate
+        case 001111:
+                    control->RegDst = 0;
+                    control->Jump = 0;
+                    control->Branch = 0;
+                    control->MemRead = 0;
+                    control->MemtoReg = 0;
+                    control->ALUOp = 6;
+                    control->MemWrite = 0;
+                    control->AluSrc = 1;
+                    control->RegWrite = 1;
+                break;
+
+        //  load word
+        case 110001:
+                    control->RegDst = 0;
+                    control->Jump = 0;
+                    control->Branch = 0;
+                    control->MemRead = 1;
+                    control->MemtoReg = 1;
+                    control->ALUOp = 0;
+                    control->MemWrite = 0;
+                    control->AluSrc = 1;
+                    control->RegWrite = 1;
+                break;
+
+        //  store word
+        case 111001:
+                    control->RegDst = 3;
+                    control->Jump = 0;
+                    control->Branch = 0;
+                    control->MemRead = 0;
+                    control->MemtoReg = 3;
+                    control->ALUOp = 0;
+                    control->MemWrite = 1;
+                    control->AluSrc = 1;
+                    control->RegWrite = 0;
+                break;
+
+        //  branch equal
+        case 000100:
+                    control->RegDst = 3;
+                    control->Jump = 0;
+                    control->Branch = 1;
+                    control->MemRead = 0;
+                    control->MemtoReg = 3;
+                    control->ALUOp = 1;
+                    control->MemWrite = 0;
+                    control->AluSrc = 0;
+                    control->RegWrite = 0;
+                 break;
+        //  set on less than immidiate
+        case 001010
+                    control->RegDst = 0;
+                    control->Jump = 0;
+                    control->Branch = 0;
+                    control->MemRead = 0;
+                    control->MemtoReg = 0;
+                    control->ALUOp = 2;
+                    control->MemWrite = 0;
+                    control->AluSrc = 1;
+                    control->RegWrite = 1;
+                break;
+
+        //  set on less than unsigned
+        case 001011
+                    control->RegDst = 0;
+                    control->Jump = 0;
+                    control->Branch = 0;
+                    control->MemRead = 0;
+                    control->MemtoReg = 0;
+                    control->ALUOp = 3;
+                    control->MemWrite = 0;
+                    control->AluSrc = 1;
+                    control->RegWrite = 1;
+                break;
+
+        //  jump
+        case 000010
+                    control->RegDst = 0;
+                    control->Jump = 1;
+                    control->Branch = 0;
+                    control->MemRead = 0;
+                    control->MemtoReg = 0;
+                    control->ALUOp = 0;
+                    control->MemWrite = 0;
+                    control->AluSrc = 0;
+                    control->RegWrite =  0;
+                break;
+
+        //  return 1 if halt
+        default:
+                    return 1;
+    }
+    return 0;
+
 }
 
 /* Read Register */
