@@ -1,7 +1,7 @@
 #include "spimcore.h"
 
 
-/* ALU  woa*/
+/* ALU */
 /* 10 Points */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
