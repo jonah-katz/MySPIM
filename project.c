@@ -65,6 +65,7 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
         *instruction = mem[MemoryLocation];
         return 0;
     }
+
     //  if no word alignment
     else{
 
@@ -115,7 +116,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                     control->MemtoReg = 0;
                     control->ALUOp = 7;
                     control->MemWrite = 0;
-                    control->AluSrc = 0;
+                    control->ALUSrc = 0;
                     control->RegWrite = 1;
                 break;
 
@@ -128,7 +129,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                     control->MemtoReg = 0;
                     control->ALUOp = 0;
                     control->MemWrite = 0;
-                    control->AluSrc = 1;
+                    control->ALUSrc = 1;
                     control->RegWrite = 1;
                 break;
 
@@ -141,7 +142,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                     control->MemtoReg = 0;
                     control->ALUOp = 6;
                     control->MemWrite = 0;
-                    control->AluSrc = 1;
+                    control->ALUSrc = 1;
                     control->RegWrite = 1;
                 break;
 
@@ -154,7 +155,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                     control->MemtoReg = 1;
                     control->ALUOp = 0;
                     control->MemWrite = 0;
-                    control->AluSrc = 1;
+                    control->ALUSrc = 1;
                     control->RegWrite = 1;
                 break;
 
@@ -167,7 +168,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                     control->MemtoReg = 3;
                     control->ALUOp = 0;
                     control->MemWrite = 1;
-                    control->AluSrc = 1;
+                    control->ALUSrc = 1;
                     control->RegWrite = 0;
                 break;
 
@@ -180,11 +181,11 @@ int instruction_decode(unsigned op,struct_controls *controls)
                     control->MemtoReg = 3;
                     control->ALUOp = 1;
                     control->MemWrite = 0;
-                    control->AluSrc = 0;
+                    control->ALUSrc = 0;
                     control->RegWrite = 0;
                  break;
         //  set on less than immidiate
-        case 001010
+        case 001010:
                     control->RegDst = 0;
                     control->Jump = 0;
                     control->Branch = 0;
@@ -192,12 +193,12 @@ int instruction_decode(unsigned op,struct_controls *controls)
                     control->MemtoReg = 0;
                     control->ALUOp = 2;
                     control->MemWrite = 0;
-                    control->AluSrc = 1;
+                    control->ALUSrc = 1;
                     control->RegWrite = 1;
                 break;
 
         //  set on less than unsigned
-        case 001011
+        case 001011:
                     control->RegDst = 0;
                     control->Jump = 0;
                     control->Branch = 0;
@@ -205,12 +206,12 @@ int instruction_decode(unsigned op,struct_controls *controls)
                     control->MemtoReg = 0;
                     control->ALUOp = 3;
                     control->MemWrite = 0;
-                    control->AluSrc = 1;
+                    control->ALUSrc = 1;
                     control->RegWrite = 1;
                 break;
 
         //  jump
-        case 000010
+        case 000010:
                     control->RegDst = 0;
                     control->Jump = 1;
                     control->Branch = 0;
@@ -218,7 +219,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                     control->MemtoReg = 0;
                     control->ALUOp = 0;
                     control->MemWrite = 0;
-                    control->AluSrc = 0;
+                    control->ALUSrc = 0;
                     control->RegWrite =  0;
                 break;
 
@@ -258,9 +259,77 @@ void sign_extend(unsigned offset,unsigned *extended_value)
 
 /* ALU operations */
 /* 10 Points */
+/*  written by Zach Chenet  */
 int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero)
 {
 
+    //  check to see which data is being changed based on the ALUsrc
+    if(ALUSrc == 1){
+        data2 = extended_value;
+    }
+
+    //  check to see if ALUOp is 7 meaning R type instruction
+    //  creates switch function to change ALUOp code for desired ALU operation
+    if(ALUOp == 7){
+        switch(funct){
+
+            //  add function field
+            case 100000:
+                        ALUOp = 0;
+                        break;
+
+            //  subtract function field
+            case 100010:
+                        ALUOp = 1;
+                        break;
+
+            //  less than signed function field
+            case 101010:
+                        ALUOp = 2;
+                        break;
+
+            //  less than unsiged field
+            case 101011:
+                        ALUOp = 3;
+                        break;
+
+            //  And function field
+            case 100100:
+                        ALUOp = 4;
+                        break;
+
+            //  Or function field
+            case 100101:
+                        ALUOp = 5;
+                        break;
+
+            //  shift left field
+            case 000100:
+                        ALUOp = 6;
+                        break;
+
+            //  Not function field
+            case 100111:
+                        ALUOp = 7;
+                        break;
+
+            //  halt occurs due to not proper function field
+            default:
+                        return 1;
+            }
+
+            //  sending the information to the ALU depending on the function field
+            ALU(data1,data2, ALUOp,ALUresult,Zero);
+
+        }
+
+        //  send the information to ALU for non function field
+        else{
+            ALU(data1,data2,ALUOp,ALUresult,Zero);
+        }
+
+        return 0;
+    }
 }
 
 /* Read / Write Memory */
