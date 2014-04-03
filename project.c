@@ -334,8 +334,33 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
 
 /* Read / Write Memory */
 /* 10 Points */
+/*  written by Jonah Katz  */
+
 int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
 {
+    if(MemRead) {
+        /* reading from memory */
+        /* check to make sure ALUresult is properly aligned word. Although, it surely will be because this check has been done in instruction_fetch */
+        if(ALUresult %4 == 0) {
+            memdata = Mem[ALUresult >> 2]; /* shift right by 2 to get desired contents */
+        } else {
+            /* not proper; halt */
+            return 1;
+        }
+    }
+    
+    if(MemWrite) {
+        /* writing to memory */
+        if(ALUresult %4 == 0) {
+            Mem[ALUresult >> 2] = data2;
+        } else {
+            /* not proper; halt */
+            return 1;
+        }
+        
+    }
+    
+    return 0;
 
 }
 
