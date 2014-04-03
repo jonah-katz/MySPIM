@@ -367,9 +367,36 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
 
 /* Write Register */
 /* 10 Points */
+/*  written by Jonah Katz  */
+
 void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,char RegWrite,char RegDst,char MemtoReg,unsigned *Reg)
 {
+    if(RegWrite) {
+        /* ok, should proceed */
+        switch (MemtoReg) {
+            case 0:
+                /* value is coming from ALUResult */
+                Reg[getProperRegisterToWriteTo] = ALUresult;
+                break;
+            case 1:
+                /* value is coming from memory */
+                Reg[getProperRegisterToWriteTo] = memdata;
+                break;
+        }
+        
+    }
 
+}
+/*  written by Jonah Katz  */
+unsigned getProperRegisterToWriteTo(char RegDst,unsigned r2,unsigned r3) {
+    switch (RegDst) {
+        case 0:
+            return r2;
+            break;
+        default:
+            return r3;
+            break;
+    }
 }
 
 /* PC update */
