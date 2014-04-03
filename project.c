@@ -376,11 +376,11 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
         switch (MemtoReg) {
             case 0:
                 /* value is coming from ALUResult */
-                Reg[getProperRegisterToWriteTo] = ALUresult;
+                Reg[getProperRegisterToWriteTo(RegDst,r2,r3)] = ALUresult;
                 break;
             case 1:
                 /* value is coming from memory */
-                Reg[getProperRegisterToWriteTo] = memdata;
+                Reg[getProperRegisterToWriteTo(RegDst,r2,r3)] = memdata;
                 break;
         }
         
