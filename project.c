@@ -348,7 +348,7 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
             return 1;
         }
     }
-    
+
     if(MemWrite) {
         /* writing to memory */
         if(ALUresult %4 == 0) {
@@ -357,9 +357,9 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
             /* not proper; halt */
             return 1;
         }
-        
+
     }
-    
+
     return 0;
 
 }
@@ -383,7 +383,7 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
                 Reg[getProperRegisterToWriteTo(RegDst,r2,r3)] = memdata;
                 break;
         }
-        
+
     }
 
 }
@@ -403,6 +403,19 @@ unsigned getProperRegisterToWriteTo(char RegDst,unsigned r2,unsigned r3) {
 /* 10 Points */
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
+    //  increases the program counter to the next word
+    *PC += 4;
 
+    //  checks to see if branching occured and if we got a zero
+    //  if this is the case add the extended value to the PC
+    if(Zero == 1 && Branch == 1){
+        *PC += extended_value << 2;
+    }
+
+    //  check to see if need to jump
+    //  combines the jump which is shifted to left by two to match up with updated PC
+    if(Jump == 1){
+        *PC = (jsec << 2) | (*PC & 0xf0000000)
+    }
 }
 
