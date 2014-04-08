@@ -343,7 +343,7 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
         /* reading from memory */
         /* check to make sure ALUresult is properly aligned word. Although, it surely will be because this check has been done in instruction_fetch */
         if(ALUresult %4 == 0) {
-            memdata = Mem[ALUresult >> 2]; /* shift right by 2 to get desired contents */
+            *memdata = Mem[ALUresult >> 2]; /* shift right by 2 to get desired contents */
         } else {
             /* not proper; halt */
             return 1;
