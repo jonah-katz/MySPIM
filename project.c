@@ -416,7 +416,7 @@ void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char 
     //  check to see if need to jump
     //  combines the jump which is shifted to left by two to match up with updated PC
     if(Jump == 1){
-        *PC = (jsec << 2) | (*PC & 0xf0000000)
+        *PC = (jsec << 2) | (*PC & 0xf0000000);
     }
 }
 
