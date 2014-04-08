@@ -1,5 +1,6 @@
 #include "spimcore.h"
 
+unsigned getProperRegisterToWriteTo(char RegDst,unsigned r2,unsigned r3);
 
 /* ALU */
 /* 10 Points */
