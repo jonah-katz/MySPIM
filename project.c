@@ -62,7 +62,7 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
         unsigned MemoryLocation = PC >> 2;
 
         //  set insruction to the disired instruction
-        *instruction = mem[MemoryLocation];
+        *instruction = Mem[MemoryLocation];
         return 0;
     }
 
