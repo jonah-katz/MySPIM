@@ -56,6 +56,7 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 /*  written by Zach Chenet  */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
+
     //  check for word alignment is a multiple of 4
     if(PC % 4 == 0){
 
@@ -94,7 +95,6 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
     *funct = instruction & operationsPart; //funct = instruction[5-0]
     *offset = instruction & offsetPart; //offset = instruction [15-0]
     *jsec = instruction & jsecPart;//jsec = instruction [25-0]
-
 }
 
 
@@ -109,7 +109,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
     switch(op){
 
         //  r-type opCode
-        case 00000:
+        case 0:
                     controls->RegDst = 1;
                     controls->Jump = 0;
                     controls->Branch = 0;
@@ -122,7 +122,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                 break;
 
         //  add imidiate
-        case 001000:
+        case 8:
                     controls->RegDst = 0;
                     controls->Jump = 0;
                     controls->Branch = 0;
@@ -135,7 +135,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                 break;
 
         //  load unsigned immidiate
-        case 001111:
+        case 15:
                     controls->RegDst = 0;
                     controls->Jump = 0;
                     controls->Branch = 0;
@@ -148,7 +148,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                 break;
 
         //  load word
-        case 110001:
+        case 35:
                     controls->RegDst = 0;
                     controls->Jump = 0;
                     controls->Branch = 0;
@@ -161,7 +161,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                 break;
 
         //  store word
-        case 111001:
+        case 43:
                     controls->RegDst = 3;
                     controls->Jump = 0;
                     controls->Branch = 0;
@@ -174,7 +174,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                 break;
 
         //  branch equal
-        case 000100:
+        case 4:
                     controls->RegDst = 3;
                     controls->Jump = 0;
                     controls->Branch = 1;
@@ -186,7 +186,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                     controls->RegWrite = 0;
                  break;
         //  set on less than immidiate
-        case 001010:
+        case 10:
                     controls->RegDst = 0;
                     controls->Jump = 0;
                     controls->Branch = 0;
@@ -199,7 +199,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                 break;
 
         //  set on less than unsigned
-        case 001011:
+        case 11:
                     controls->RegDst = 0;
                     controls->Jump = 0;
                     controls->Branch = 0;
@@ -212,7 +212,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
                 break;
 
         //  jump
-        case 000010:
+        case 2:
                     controls->RegDst = 0;
                     controls->Jump = 1;
                     controls->Branch = 0;
@@ -228,6 +228,7 @@ int instruction_decode(unsigned op,struct_controls *controls)
         default:
                     return 1;
     }
+
     return 0;
 
 }
@@ -251,7 +252,7 @@ void sign_extend(unsigned offset,unsigned *extended_value)
     unsigned signBit = offset >> 15; /* the sign but is the left most bit of the 16 bit string */
     if(signBit == 1) {
         /* negative, expand to 32 bits */
-        *extended_value = offset | 0xFFFF0000; /* left half are all 1's
+        *extended_value = offset | 0xFFFF0000; /* left half are all 1's */
     } else {
         /* not negative, just keep at 16 bits */
         *extended_value = offset & 0x0000ffff;
@@ -275,42 +276,42 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
         switch(funct){
 
             //  add function field
-            case 100000:
+            case 32:
                         ALUOp = 0;
                         break;
 
             //  subtract function field
-            case 100010:
+            case 34:
                         ALUOp = 1;
                         break;
 
             //  less than signed function field
-            case 101010:
+            case 42:
                         ALUOp = 2;
                         break;
 
             //  less than unsiged field
-            case 101011:
+            case 43:
                         ALUOp = 3;
                         break;
 
             //  And function field
-            case 100100:
+            case 36:
                         ALUOp = 4;
                         break;
 
             //  Or function field
-            case 100101:
+            case 37:
                         ALUOp = 5;
                         break;
 
             //  shift left field
-            case 000100:
+            case 4:
                         ALUOp = 6;
                         break;
 
             //  Not function field
-            case 100111:
+            case 39:
                         ALUOp = 7;
                         break;
 
@@ -318,6 +319,7 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
             default:
                         return 1;
             }
+
 
             //  sending the information to the ALU depending on the function field
             ALU(data1,data2, ALUOp,ALUresult,Zero);
@@ -329,8 +331,8 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
             ALU(data1,data2,ALUOp,ALUresult,Zero);
         }
 
+
         return 0;
-    }
 }
 
 /* Read / Write Memory */
@@ -343,7 +345,7 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
         /* reading from memory */
         /* check to make sure ALUresult is properly aligned word. Although, it surely will be because this check has been done in instruction_fetch */
         if(ALUresult %4 == 0) {
-            memdata = Mem[ALUresult >> 2]; /* shift right by 2 to get desired contents */
+            *memdata = Mem[ALUresult >> 2]; /* shift right by 2 to get desired contents */
         } else {
             /* not proper; halt */
             return 1;
@@ -387,6 +389,7 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
 
     }
 
+
 }
 /*  written by Jonah Katz  */
 unsigned getProperRegisterToWriteTo(char RegDst,unsigned r2,unsigned r3) {
@@ -405,19 +408,24 @@ unsigned getProperRegisterToWriteTo(char RegDst,unsigned r2,unsigned r3) {
 /*  written by Zach Chenet  */
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
+
+
     //  increases the program counter to the next word
     *PC += 4;
-
     //  checks to see if branching occured and if we got a zero
     //  if this is the case add the extended value to the PC
     if(Zero == 1 && Branch == 1){
         *PC += extended_value << 2;
+
     }
 
     //  check to see if need to jump
     //  combines the jump which is shifted to left by two to match up with updated PC
     if(Jump == 1){
         *PC = (jsec << 2) | (*PC & 0xf0000000);
+
     }
+
+
 }
 
