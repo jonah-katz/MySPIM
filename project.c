@@ -401,6 +401,7 @@ unsigned getProperRegisterToWriteTo(char RegDst,unsigned r2,unsigned r3) {
 
 /* PC update */
 /* 10 Points */
+/*  written by Zach Chenet  */
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
     //  increases the program counter to the next word
