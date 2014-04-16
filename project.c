@@ -1,9 +1,17 @@
+//  Zach Chenet & Jonah Katz
+//  CDA Final Project
+//  April 18, 2014
+//  MySpism -- a MIPS simulator that reads in machine code and simulates the MIPS cycle
+
+
 #include "spimcore.h"
 
 unsigned getProperRegisterToWriteTo(char RegDst,unsigned r2,unsigned r3);
 
+
+/*  function to implement the operations of the ALUControl  */
+/*  outputs the result to ALUresult */
 /* ALU */
-/* 10 Points */
 /*  written by Jonah Katz   */
 void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 {
@@ -51,8 +59,9 @@ void ALU(unsigned A,unsigned B,char ALUControl,unsigned *ALUresult,char *Zero)
 
 }
 
+/*  function used to check for word aligment.   */
+/*  shifts the PC to the right 2 to get the actual location */
 /* instruction fetch */
-/* 10 Points */
 /*  written by Zach Chenet  */
 int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
 {
@@ -75,9 +84,9 @@ int instruction_fetch(unsigned PC,unsigned *Mem,unsigned *instruction)
     }
 }
 
-
+/*  function to split the partition into its seperate parts */
+/*  allows MIPs processes to perform instruction    */
 /* instruction partition */
-/* 10 Points */
 /*  written by Jonah Katz   */
 void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsigned *r2, unsigned *r3, unsigned *funct, unsigned *offset, unsigned *jsec)
 {
@@ -97,10 +106,9 @@ void instruction_partition(unsigned instruction, unsigned *op, unsigned *r1,unsi
     *jsec = instruction & jsecPart;//jsec = instruction [25-0]
 }
 
-
-
+/*  function to decode the instruction and set the control signals  */
+/*  allows for the signals to be sent to other parts of data path   */
 /* instruction decode */
-/* 15 Points */
 /*  written by Zach Chenet  */
 int instruction_decode(unsigned op,struct_controls *controls)
 {
@@ -110,119 +118,121 @@ int instruction_decode(unsigned op,struct_controls *controls)
 
         //  r-type opCode
         case 0:
-                    controls->RegDst = 1;
-                    controls->Jump = 0;
-                    controls->Branch = 0;
-                    controls->MemRead = 0;
-                    controls->MemtoReg = 0;
-                    controls->ALUOp = 7;
-                    controls->MemWrite = 0;
-                    controls->ALUSrc = 0;
-                    controls->RegWrite = 1;
-                break;
+            controls->RegDst = 1;
+            controls->ALUSrc = 0;
+            controls->MemtoReg = 0;
+            controls->RegWrite = 1;
+            controls->MemRead = 0;
+            controls->MemWrite = 0;
+            controls->Branch = 0;
+            controls->ALUOp = 7;
+            controls->Jump = 0;
+            break;
 
         //  add imidiate
         case 8:
-                    controls->RegDst = 0;
-                    controls->Jump = 0;
-                    controls->Branch = 0;
-                    controls->MemRead = 0;
-                    controls->MemtoReg = 0;
-                    controls->ALUOp = 0;
-                    controls->MemWrite = 0;
-                    controls->ALUSrc = 1;
-                    controls->RegWrite = 1;
-                break;
+            controls->RegDst = 0;
+            controls->ALUSrc = 1;
+            controls->MemtoReg = 0;
+            controls->RegWrite = 1;
+            controls->MemRead = 0;
+            controls->MemWrite = 0;
+            controls->Branch = 0;
+            controls->ALUOp = 0;
+            controls->Jump = 0;
+            break;
 
         //  load unsigned immidiate
         case 15:
-                    controls->RegDst = 0;
-                    controls->Jump = 0;
-                    controls->Branch = 0;
-                    controls->MemRead = 0;
-                    controls->MemtoReg = 0;
-                    controls->ALUOp = 6;
-                    controls->MemWrite = 0;
-                    controls->ALUSrc = 1;
-                    controls->RegWrite = 1;
-                break;
+            controls->RegDst = 0;
+            controls->ALUSrc = 1;
+            controls->MemtoReg = 0;
+            controls->RegWrite = 1;
+            controls->MemRead = 0;
+            controls->MemWrite = 0;
+            controls->Branch = 0;
+            controls->ALUOp = 6;
+            controls->Jump = 0;
+            break;
 
         //  load word
         case 35:
-                    controls->RegDst = 0;
-                    controls->Jump = 0;
-                    controls->Branch = 0;
-                    controls->MemRead = 1;
-                    controls->MemtoReg = 1;
-                    controls->ALUOp = 0;
-                    controls->MemWrite = 0;
-                    controls->ALUSrc = 1;
-                    controls->RegWrite = 1;
-                break;
+            controls->RegDst = 0;
+            controls->ALUSrc = 1;
+            controls->MemtoReg = 1;
+            controls->RegWrite = 1;
+            controls->MemRead = 1;
+            controls->MemWrite = 0;
+            controls->Branch = 0;
+            controls->ALUOp = 0;
+            controls->Jump = 0;
+            break;
 
         //  store word
         case 43:
-                    controls->RegDst = 3;
-                    controls->Jump = 0;
-                    controls->Branch = 0;
-                    controls->MemRead = 0;
-                    controls->MemtoReg = 3;
-                    controls->ALUOp = 0;
-                    controls->MemWrite = 1;
-                    controls->ALUSrc = 1;
-                    controls->RegWrite = 0;
-                break;
+            controls->RegDst = 2;
+            controls->ALUSrc = 1;
+            controls->MemtoReg = 2;
+            controls->RegWrite = 0;
+            controls->MemRead = 0;
+            controls->MemWrite = 1;
+            controls->Branch = 0;
+            controls->ALUOp = 0;
+            controls->Jump = 0;
+            break;
 
         //  branch equal
         case 4:
-                    controls->RegDst = 3;
-                    controls->Jump = 0;
-                    controls->Branch = 1;
-                    controls->MemRead = 0;
-                    controls->MemtoReg = 3;
-                    controls->ALUOp = 1;
-                    controls->MemWrite = 0;
-                    controls->ALUSrc = 0;
-                    controls->RegWrite = 0;
-                 break;
+            controls->RegDst = 2;
+            controls->ALUSrc = 0;
+            controls->MemtoReg = 2;
+            controls->RegWrite = 0;
+            controls->MemRead = 0;
+            controls->MemWrite = 0;
+            controls->Branch = 1;
+            controls->ALUOp = 1;
+            controls->Jump = 0;
+            break;
+            
         //  set on less than immidiate
         case 10:
-                    controls->RegDst = 0;
-                    controls->Jump = 0;
-                    controls->Branch = 0;
-                    controls->MemRead = 0;
-                    controls->MemtoReg = 0;
-                    controls->ALUOp = 2;
-                    controls->MemWrite = 0;
-                    controls->ALUSrc = 1;
-                    controls->RegWrite = 1;
-                break;
+            controls->RegDst = 0;
+            controls->ALUSrc = 1;
+            controls->MemtoReg = 0;
+            controls->RegWrite = 1;
+            controls->MemRead = 0;
+            controls->MemWrite = 0;
+            controls->Branch = 0;
+            controls->ALUOp = 2;
+            controls->Jump = 0;
+            break;
 
         //  set on less than unsigned
         case 11:
-                    controls->RegDst = 0;
-                    controls->Jump = 0;
-                    controls->Branch = 0;
-                    controls->MemRead = 0;
-                    controls->MemtoReg = 0;
-                    controls->ALUOp = 3;
-                    controls->MemWrite = 0;
-                    controls->ALUSrc = 1;
-                    controls->RegWrite = 1;
-                break;
+            controls->RegDst = 0;
+            controls->ALUSrc = 1;
+            controls->MemtoReg = 0;
+            controls->RegWrite = 1;
+            controls->MemRead = 0;
+            controls->MemWrite = 0;
+            controls->Branch = 0;
+            controls->ALUOp = 3;
+            controls->Jump = 0;
+            break;
 
         //  jump
         case 2:
-                    controls->RegDst = 0;
-                    controls->Jump = 1;
-                    controls->Branch = 0;
-                    controls->MemRead = 0;
-                    controls->MemtoReg = 0;
-                    controls->ALUOp = 0;
-                    controls->MemWrite = 0;
-                    controls->ALUSrc = 0;
-                    controls->RegWrite =  0;
-                break;
+            controls->RegDst = 0;
+            controls->ALUSrc = 0;
+            controls->MemtoReg = 0;
+            controls->RegWrite = 0;
+            controls->MemRead = 0;
+            controls->MemWrite = 0;
+            controls->Branch = 0;
+            controls->ALUOp = 0;
+            controls->Jump = 1;
+            break;
+            
 
         //  return 1 if halt
         default:
@@ -233,8 +243,9 @@ int instruction_decode(unsigned op,struct_controls *controls)
 
 }
 
+/*  reads in the registers addressed by r1 and r2   */
+/*  writes the read values to data1 and data2   */
 /* Read Register */
-/* 5 Points */
 /*  written by Jonah Katz   */
 void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigned *data2)
 {
@@ -243,9 +254,8 @@ void read_register(unsigned r1,unsigned r2,unsigned *Reg,unsigned *data1,unsigne
     *data2 = Reg[r2];
 }
 
-
+/*  assigns the sign-extended value of offset to extended_value */
 /* Sign Extend */
-/* 10 Points */
 /*  written by Jonah Katz   */
 void sign_extend(unsigned offset,unsigned *extended_value)
 {
@@ -259,8 +269,9 @@ void sign_extend(unsigned offset,unsigned *extended_value)
     }
 }
 
+/*  function to set the ALUop code if it was a r-type instruction and send the result   */
+/*  sends the information to the ALU    */
 /* ALU operations */
-/* 10 Points */
 /*  written by Zach Chenet  */
 int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigned funct,char ALUOp,char ALUSrc,unsigned *ALUresult,char *Zero)
 {
@@ -335,10 +346,10 @@ int ALU_operations(unsigned data1,unsigned data2,unsigned extended_value,unsigne
         return 0;
 }
 
+/*  function to read the content of the memory locatoin addressed by ALUresult  */
+/*  also writes the value of data2 to the memory location addressed by ALUresult    */
 /* Read / Write Memory */
-/* 10 Points */
 /*  written by Jonah Katz  */
-
 int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsigned *memdata,unsigned *Mem)
 {
     if(MemRead) {
@@ -367,11 +378,9 @@ int rw_memory(unsigned ALUresult,unsigned data2,char MemWrite,char MemRead,unsig
 
 }
 
-
+/*  function to write the data of ALUresult or memdata to a a register at r2 or r3  */
 /* Write Register */
-/* 10 Points */
 /*  written by Jonah Katz  */
-
 void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,char RegWrite,char RegDst,char MemtoReg,unsigned *Reg)
 {
     if(RegWrite) {
@@ -391,6 +400,8 @@ void write_register(unsigned r2,unsigned r3,unsigned memdata,unsigned ALUresult,
 
 
 }
+
+/*  helper function to determine which register to save to  */
 /*  written by Jonah Katz  */
 unsigned getProperRegisterToWriteTo(char RegDst,unsigned r2,unsigned r3) {
     switch (RegDst) {
@@ -403,8 +414,8 @@ unsigned getProperRegisterToWriteTo(char RegDst,unsigned r2,unsigned r3) {
     }
 }
 
+/*  function to update the program counter  */
 /* PC update */
-/* 10 Points */
 /*  written by Zach Chenet  */
 void PC_update(unsigned jsec,unsigned extended_value,char Branch,char Jump,char Zero,unsigned *PC)
 {
