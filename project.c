@@ -194,10 +194,11 @@ int instruction_decode(unsigned op,struct_controls *controls)
             controls->Jump = 0;
             break;
             
-        //  set on less than immidiate
+        //  set on less than
         case 10:
-            controls->RegDst = 0;
-            controls->ALUSrc = 1;
+            
+            controls->RegDst = 1;
+            controls->ALUSrc = 0;
             controls->MemtoReg = 0;
             controls->RegWrite = 1;
             controls->MemRead = 0;
@@ -209,8 +210,9 @@ int instruction_decode(unsigned op,struct_controls *controls)
 
         //  set on less than unsigned
         case 11:
-            controls->RegDst = 0;
-            controls->ALUSrc = 1;
+            
+            controls->RegDst = 1;
+            controls->ALUSrc = 0;
             controls->MemtoReg = 0;
             controls->RegWrite = 1;
             controls->MemRead = 0;
